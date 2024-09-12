@@ -1,3 +1,5 @@
+
+
 import { NextResponse } from 'next/server'
 import { YoutubeTranscript } from 'youtube-transcript'
 
@@ -23,6 +25,7 @@ export async function POST(request: Request) {
 
       const fullTranscript = transcript.map(entry => entry.text).join(' ')
       return NextResponse.json({ transcript: fullTranscript })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (transcriptError: any) {
       if (transcriptError.message.includes('Transcript is disabled on this video')) {
         return NextResponse.json({ error: 'Transcript is not available for this video' }, { status: 404 })
