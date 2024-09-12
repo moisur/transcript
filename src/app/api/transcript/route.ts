@@ -10,8 +10,6 @@ function extractVideoId(url: string): string | null {
 export async function POST(request: Request) {
   console.log('POST request received');
   try {
-    const body = await request.json();
-    console.log('Request body:', body);
     const { url, language } = await request.json();
     const videoId = extractVideoId(url);
 
