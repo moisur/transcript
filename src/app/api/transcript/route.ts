@@ -16,13 +16,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
     }
 
-    const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
-      lang: language,
-    })
+    try {
+      const transcript = await YoutubeTranscript.fetchTranscript(videoId, {
+        lang: language,
+      })
 
-    const fullTranscript = transcript.map(entry => entry.text).join(' ')
-
-    return NextResponse.json({ transcript: fullTranscript })
+      const fullTranscript = transcript.map(entry => entry.text).join(' ')
+      return NextResponse.json({ transcript: fullTranscript })
+    } catch (transcriptError: any) {
+      if (transcriptError.message.includes('Transcript is disabled on this video')) {
+        return NextResponse.json({ error: 'Transcript is not available for this video' }, { status: 404 })
+      }
+      throw transcriptError
+    }
   } catch (error) {
     console.error('Error fetching transcript:', error)
     return NextResponse.json({ error: 'Failed to fetch transcript' }, { status: 500 })
